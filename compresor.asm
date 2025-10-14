@@ -1,81 +1,137 @@
-
 .data
-mensaje_pedir_archivo:	.asciiz "Ingrese el nombre del archivo a comprimir(con la extensión del archivo): "
-nombre_archivo_comprimir: .space 32
+message_file_name:	.asciiz "Ingrese el nombre del archivo a comprimir(con la extensión del archivo): "
+file_name:	.space 32
 error_message_file_not_found: .asciiz "\nEl archivo especificado no fue encontrado"
-contenido_archivo_lectura: .space 4096
+error_message_file_too_big: .asciiz "\nEl archivo especificado es demasiado grande uwu"
+compressing: .asciiz "\nCompressing aña"
+data_to_compress: .space 4097
 caracter:	.asciiz "\n"
 
 .text
 
 Main: 	
-	# Obtener el contenido del archivo del usuario
-	jal Leer_archivo
-	
-	
 
-End_main:
-	li $v0, 10
-	syscall
-
-
-
-Leer_archivo:
-	# Print message to indicate the user to write file name 
-	li $v0, 4
-	la $a0, mensaje_pedir_archivo
-	syscall
-	
-	# Recive user's file name
-	li $v0, 8
-	la $a0, nombre_archivo_comprimir
+	# Obtener nombre del archivo
+	la $a0, message_file_name
 	li $a1, 32
-	syscall
-	
-	# Delete \n from end of file 
-	la $t0, nombre_archivo_comprimir
-	la $t2, caracter
-	lb $t2, 0($t2)
-		
-While:	
-	lb $t1, 0($t0)
-	addi $t0, $t0, 1
-	beq $zero, $t1, End_while
-	bne $t2, $t1, While
-	sb $zero, -1($t0)
+	la $a2, file_name
+	jal Ask_file_name
 
-End_while:
-	# Open file provided by user on readmode
-	li $v0, 13
-	la $a0, nombre_archivo_comprimir
-	li $a1, 0
-	syscall
+	# Obtener el contenido del archivo del usuario
+	move $a0, $v0
+	la $a1, data_to_compress
+	jal Read_file
 	
-	# Manage open file error 
-Error_file_not_found:
-	bgt $v0, $zero, Read_file_content
+	bne $v0, $zero, Check_file_size
 	li $v0, 4
 	la $a0, error_message_file_not_found 
 	syscall
 	j End_main
 	
-Read_file_content:
-	# Reading content from the opened file 
+Check_file_size:
+	bgt $v0, $zero, Compress
+	li $v0, 4
+	la $a0, error_message_file_too_big
+	syscall
+	j End_main
+
+Compress:
+	li $v0, 4
+	la $a0, compressing 
+	syscall
+	
+End_main:
+	li $v0, 10
+	syscall
+
+################
+# Función: Ask_file_name
+# Utilidad: Envia un mensaje al usuario para indicarle que digite el nombre del archivo 
+# a comprimir y almacena el nombre del archivo quitando el salto de linea del final si
+# este lo tiene
+# Entradas: 
+# $a0: dirección de un string terminado en NULL que corresponde al mensaje a mostrar 
+# para preguntar por el nombre del archivo
+# $a1: tamaño máximo del nombre del archivo
+# $a2: dirección del inicio de un spacio reservado para almacenar el nombre del archivo
+# Salidas:
+# $v0: dirección de un string que corresponde al nombre del archivo
+Ask_file_name:
+# Print message to indicate the user to write file name 
+	li $v0, 4
+	syscall
+	
+	# Recive user's file name
+	li $v0, 8
+	move $a0, $a2
+	syscall
+	
+	# Delete \n from end of file if it  
+	la $t2, caracter
+	lb $t2, 0($t2)
+		
+While:	
+	lb $t1, 0($a0)
+	addi $a0, $a0, 1
+	beq $zero, $t1, End_ask_file_name
+	bne $t2, $t1, While
+	sb $zero, -1($a0)
+	
+End_ask_file_name:
+	move $v0, $a2
+	jr $ra
+
+
+################
+# Función: Read_file
+# Utilidad: Intenta abrir y leer el archivo especificado por el usuario
+# Entradas: 
+# $a0: dirección de un string que corresponde al nombre del archivo
+# $a1: dirección del inicio de un spacio reservado para almacenar el contenido del archivo
+# Salidas:
+# $v0: dirección del inicio del contenido leido del archivo
+# $v0 = 0 Archivo no encontrado
+# $v0 = 0 Archivo supera el tamaño máximo
+Read_file:
+	move $t2, $a1
+	
+	# Open file provided by user on readmode
+	li $v0, 13
+	li $a1, 0		
+	syscall
+	
+	blt $v0, $zero, Read_file_not_found
 	move $t0, $v0
+
+	# Reading content from the opened file 
 	li $v0, 14
 	move $a0, $t0
-	la $a1, contenido_archivo_lectura
-	li $a2, 4096
+	move $a1,$t2
+	li $a2, 4097
 	syscall
 	move $t1, $v0
 	
+	beq $v0, $a2, Read_file_too_big
+	
 	#close opened file
 	li $v0, 15
-	move $a0, $t0
 	syscall
 	
 	move $v0, $t1
+	j End_read_file
 	
+
+Read_file_too_big:
+	#close opened file
+	li $v0, 15
+	syscall
+	li $v0, -1
+	j End_read_file
+
+Read_file_not_found:
+	li $v0, 0
+
+End_read_file:
 	jr $ra
 	
 	
