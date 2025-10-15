@@ -56,19 +56,22 @@ End_main:
 # $a2: dirección del inicio de un spacio reservado para almacenar el nombre del archivo
 # Salidas:
 # $v0: dirección de un string que corresponde al nombre del archivo
+# Variables:
+# $t0: Primero es la dirección a un string que contiene el salto de linea, luego obtiene el valor del string
+# $t1: Obtiene el valor de todos los bytes que forman parte del nombre de archivo que ingresa el usuario
 Ask_file_name:
-# Print message to indicate the user to write file name 
+	# Imprimir mensaje base para pedir el nombre del archivo
 	li $v0, 4
 	syscall
 	
-	# Recive user's file name
+	# Recibir el nombre del archivo del usuario
 	li $v0, 8
 	move $a0, $a2
 	syscall
 	
-	# Delete \n from end of file if it  
-	la $t2, caracter
-	lb $t2, 0($t2)
+	# Eliminar el salto de linea al final del nombre del archivo si este lo tiene  
+	la $t0, caracter
+	lb $t0, 0($t0)
 		
 While:	
 	lb $t1, 0($a0)
@@ -78,7 +81,7 @@ While:
 	sb $zero, -1($a0)
 	
 End_ask_file_name:
-	move $v0, $a2
+	move $v0, $a2	
 	jr $ra
 
 
@@ -92,18 +95,23 @@ End_ask_file_name:
 # $v0: dirección del inicio del contenido leido del archivo
 # $v0 = 0 Archivo no encontrado
 # $v0 = 0 Archivo supera el tamaño máximo
+# Variables:
+# $t0: File descriptor
+# $t1: Tamaño del archivo leido
+# $t2: Dirección del espacio donde se alacenara el contenido leido del archivo 
 Read_file:
 	move $t2, $a1
 	
-	# Open file provided by user on readmode
+	# Abrir el archivo 
 	li $v0, 13
-	li $a1, 0		
+	li $a1, 0	# Bandera de lectura		
 	syscall
 	
+	# Comprobar si el archivo esta vacío
 	blt $v0, $zero, Read_file_not_found
 	move $t0, $v0
 
-	# Reading content from the opened file 
+	# Leer el contenido del archivo 
 	li $v0, 14
 	move $a0, $t0
 	move $a1,$t2
@@ -111,9 +119,10 @@ Read_file:
 	syscall
 	move $t1, $v0
 	
+	# Comprobar si el archivo sobrepasa el tamaño limite 
 	beq $v0, $a2, Read_file_too_big
 	
-	#close opened file
+	# Cerrar el archivo
 	li $v0, 15
 	syscall
 	
@@ -122,7 +131,7 @@ Read_file:
 	
 
 Read_file_too_big:
-	#close opened file
+	# Cerrar el archivo 
 	li $v0, 15
 	syscall
 	li $v0, -1
