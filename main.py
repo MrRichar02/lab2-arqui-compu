@@ -83,7 +83,6 @@ def main():
     for char, count in codified:
         binary_data.append(count)  
         binary_data.append(ord(char)) 
-        print(f"Agregado al binario: count={count}, char='{char}'")
             
     # Escribir archivo comprimido
     try:

@@ -74,11 +74,12 @@ Ask_file_name:
 	lb $t0, 0($t0)
 		
 While:	
-	lb $t1, 0($a0)
-	addi $a0, $a0, 1
+	lw $t1, 0($a0)
+	srl $t2, $t1, 24
+	addi $a0, $a0, 4
 	beq $zero, $t1, End_ask_file_name
-	bne $t2, $t1, While
-	sb $zero, -1($a0)
+	bne $t0, $t1, While
+	sb $zero, -4($a0)
 	
 End_ask_file_name:
 	move $v0, $a2	
