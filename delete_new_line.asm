@@ -8,6 +8,7 @@
 # $t1 - contador para recorrer la palabra que tiene el salto de linea byte a byte
 
 delete_new_line:
+	add $a1, $a1, -4
 	add $a0, $a0, $a1
 	while:	
 		beq $a1, $zero, end_delete_new_line # Se utiliza ahora $a1 como criterio de parada

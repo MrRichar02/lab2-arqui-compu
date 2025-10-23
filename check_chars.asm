@@ -1,12 +1,3 @@
-.data
-
-mensaje:	.asciiz ""
-
-.text
-
-la $a0, mensaje
-li $a1, 8
-
 ####### func check_chars ( Address file to compress, size of file)
 # entradas:
 # a0 direccion archivo a verficar
@@ -23,8 +14,9 @@ li $a1, 8
 # v0 = 0 se encontro un caracter invalido 
 
 check_chars:
-	beq $a1, $zero, good_end
+	ble $a1, $zero, good_end
 	lw $t0, 0($a0)
+	li $t1, 0  # Inicializar el contador para recorrer los caracteres en 0
 	
 	for:
 		beq $t3, 4, error
@@ -37,27 +29,27 @@ check_chars:
 		bgt $t2, 0x7e, error
 		bgt $t2, 0x1F, for
 		beq $t2, 0x0a, for
+		beq $t2, 0x0d, for
 		
 		beq $t2, $zero, case_null
 		
 		j error
 		
-	case_null:
-		addi $t3, $t3, 1
-		j for
+		case_null:
+			addi $t3, $t3, 1
+			j for
 		
 	end_for:
 		addi $a0, $a0, 4
 		subi, $a1, $a1, 4
-		li $t1, 0
 		j check_chars
 		
-good_end:
-	li $v0, 1
-	j end_check_chars
+	good_end:
+		li $v0, 1
+		j end_check_chars
 
-error:
-	li $v0, 0
+	error:
+		li $v0, -1
 
 end_check_chars:
 	jr $ra
