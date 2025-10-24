@@ -1,9 +1,9 @@
 .data
 
-success: .asciiz "Compresión exitosa con un ratio aproximado de: "
+success: .asciiz "\nCompresión exitosa con un ratio aproximado de: "
 compress_rate: .space 1
 form_rate: ":1"
-fail: .asciiz "Compresión no efectiva, archivo resultante más grande que el original"
+fail: .asciiz "\nCompresión no efectiva, archivo resultante más grande que el original"
 
 .text
 

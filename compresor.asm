@@ -1,11 +1,14 @@
 .data
-
 file_name:	.space 33
 .align 2
 data_to_compress: .space 4097
 .align 2
 data_compress: .space 8192
 error_message_main:  .asciiz "\n------Error del usuario, ejecute otra vez.--------"
+.align 2
+output_file_name:	.asciiz "rle_compress.bin"
+.data 
+invalidad_char_error: 	.asciiz "Se encontro un caracter invalido"
 
 
 .text
@@ -37,7 +40,7 @@ Main:
 	# Comprobar carácteres - func check_chars()
 	la $a0, data_to_compress # Entrada 1
 	move $a1, $s0		 # Entrada 2
-	jal check_chars		 # Llamado a la función
+	jal check_chars_v1	 # Llamado a la función
 	
 	beq $v0, -1, main_error
 	
@@ -49,13 +52,21 @@ Main:
 	
 	move $s1, $v0            # Guardar el valor de caracteres resultante de la compresión
 	
+	# Escribir archivo comprimido
+	la $a0, output_file_name	# Entrada 1 
+	la $a1, data_compress		# Entrada 2
+	move $a2, $s1			# Entrada 3
+	jal func_write_file		# Llamado a la funcion
+	
 	# Checksum 
-
+	la $a0, data_compress	# Entrada 1
+	move $a1, $s1		# Entrada 2
+	jal func_checksum_v1	# Llamado a la funcion
 	
 	# Radio de comprension func calculate_compress_rate()
-	move $a0, $s0
-	move $a1, $s1
-	jal  calculate_compress_rate
+	move $a0, $s0			# Entrada 1
+	move $a1, $s1			# Entrada 2
+	jal  calculate_compress_rate	# Llamado a la funcion
 	
 	j End_main
 	
@@ -75,6 +86,8 @@ End_main:
 .include "read_file.asm"
 .include "check_chars.asm"
 .include "compress.asm"
+.include "write_file.asm"
+.include "checksum.asm"
 .include "compress_rate.asm"
 
 

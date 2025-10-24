@@ -1,16 +1,14 @@
+.data
+.align 2
+mensaje:	.asciiz "El resultado del checksum fue: "
+
 ##### func checksum (address contenido comprimido, size) return valor_checksum ####
 # Entradas:
 # $a0 - dirección base del contenido comprimido
 # $a1 - tamaño del array
 
 
-.data
-.align 2
-bytes_prueba: .byte 1, 2, 3, 4, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120
-
 .text
-la $a0, bytes_prueba
-li $a1, 16
 
 # Variables Locales v1
 # $t0 -  palabra cargada
@@ -25,7 +23,7 @@ li $a1, 16
 # $v0 - checksum calculado
 
 func_checksum_v1:
-	beq $t6,$a1, end_func_checksum_v1
+	bge $t6,$a1, end_func_checksum_v1
 	lw $t0, 0($a0)
 	andi $t1, $t0, 0xFF
 	srl  $t2, $t0, 8
@@ -42,7 +40,17 @@ func_checksum_v1:
 	addi $t6, $t6, 4
 	j func_checksum_v1
 end_func_checksum_v1:
+
+	li $v0, 4
+	la $a0, mensaje
+	syscall
+
+	li $v0 34
+	move $a0, $t5
+	syscall
+
 	move $v0, $t5 
+	
 	jr $ra
 	
 # Variables Locales v2
@@ -54,13 +62,26 @@ end_func_checksum_v1:
 # $v0 - checksum calculado
 
 func_checksum_v2:
+	li $t1, 0
+while_checksum_v2:
 	beq $t2,$a1, end_func_checksum_v2
 	lb $t0, 0($a0)
 	add $t1, $t1, $t0
 	addi $a0, $a0, 1
 	addi $t2, $t2, 1
-	j func_checksum_v2
+	j while_checksum_v2
 end_func_checksum_v2:
+	li $v0, 4
+	la $a0, mensaje
+	syscall
+
+	li $v0 34
+	move $a0, $t1
+	syscall
+
+	move $v0, $t1 
+	
+	jr $ra
 	move $v0, $t1
 	jr $ra
 

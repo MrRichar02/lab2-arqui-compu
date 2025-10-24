@@ -15,6 +15,7 @@
 
 func_compress:
 	move $t3, $a0
+	li $t0, 0
 	while_compress:
 		beq $a2, $zero, end_func_compress
 		addi $t0, $t0, 1
