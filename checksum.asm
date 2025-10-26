@@ -2,13 +2,12 @@
 .align 2
 mensaje:	.asciiz "El resultado del checksum fue: "
 
+.text
+
 ##### func checksum (address contenido comprimido, size) return valor_checksum ####
 # Entradas:
 # $a0 - dirección base del contenido comprimido
 # $a1 - tamaño del array
-
-
-.text
 
 # Variables Locales v1
 # $t0 -  palabra cargada

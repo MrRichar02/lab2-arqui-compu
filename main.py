@@ -76,7 +76,7 @@ def main():
     
     # Calcular checksum
     checksum_value = checksum(codified)
-    print(f"Checksum: {checksum_value}")
+    print(f"Checksum: 0x{checksum_value}")
     
     # Convertir a bytes para escribir
     binary_data = bytearray()

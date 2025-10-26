@@ -1,3 +1,8 @@
+.data 
+invalidad_char_error: 	.asciiz "Se encontro un caracter invalido"
+
+.text
+
 ####### func check_chars ( Address file to compress, size of file)
 # entradas:
 # a0 direccion archivo a verficar
@@ -16,29 +21,25 @@ check_chars_v1:
 	lbu $t0, 0($a0)
 	addi $a0, $a0, 1
 	subi $a1, $a1, 1
+	
 	bgt $t0, 0x7e, error_check_chars_v1
 	bgt $t0, 0x1F, check_chars_v1
-	beq $t0, 10, check_chars_v1
-	beq $t0, 0, case_null_chars_v1
+	beq $t0, 0x0a, check_chars_v1
+	beq $t0, 0x0d, check_chars_v1
+	
+	beq $t0, 0, good_end_chars_v1
 				
 	j error_check_chars_v1
-
-case_null_chars_v1:
-	subi $a0, $a0, 1
-	andi $t1, $a0, 0xFF
-	addi $a0, $a0, 1
-	bne $t1, $zero, check_chars_v1
-	j error_check_chars_v1
 	
-good_end_chars_v1:
-	li $v0, 1
-	j end_check_chars_v1
+	good_end_chars_v1:
+		li $v0, 1
+		j end_check_chars_v1
 
-error_check_chars_v1:
-	li $v0, 4
-	la $a0, invalidad_char_error
-	syscall
-	li $v0, -1
+	error_check_chars_v1:
+		li $v0, 4
+		la $a0, invalidad_char_error
+		syscall
+		li $v0, -1
 
 end_check_chars_v1:
 	jr $ra
@@ -46,7 +47,7 @@ end_check_chars_v1:
 # Version 2
 # variables:
 # t0: En este se va guardando el valor de cada palabra 
-# t1: Contador utlizado para recorrer los 4 caracteres de la palabra acutal
+# t1: Contador utlizado para recorrer los 4 caracteres de la palabra actual
 # t2: En este se van almacenando los caracteres de cada palabra 
 # t3: Contador de valores nulos, se usa para permitir casos donde no se llena completamente el ultimo bloque 
 check_chars_v2:
@@ -67,13 +68,9 @@ check_chars_v2:
 		beq $t2, 0x0a, for_chars_v2
 		beq $t2, 0x0d, for_chars_v2
 				
-		beq $t2, $zero, case_null_chars_v2
+		beq $t2, $zero, good_end_chars_v2
 		
 		j error_chars_v2
-		
-		case_null_chars_v2:
-			bne $t0, $zero, end_for_chars_v2
-			j error_chars_v2
 		
 	end_for_chars_v2:
 		addi $a0, $a0, 4

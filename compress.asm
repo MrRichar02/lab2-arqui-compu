@@ -34,3 +34,4 @@ func_compress:
 end_func_compress:
 	sub $v0, $a0, $t3
 	jr $ra
+	

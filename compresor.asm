@@ -5,10 +5,8 @@ data_to_compress: .space 4097
 .align 2
 data_compress: .space 8192
 error_message_main:  .asciiz "\n------Error del usuario, ejecute otra vez.--------"
-.align 2
 output_file_name:	.asciiz "rle_compress.bin"
-.data 
-invalidad_char_error: 	.asciiz "Se encontro un caracter invalido"
+
 
 
 .text
