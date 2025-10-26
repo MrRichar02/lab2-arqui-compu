@@ -17,12 +17,14 @@ fail: .asciiz "\nCompresión no efectiva, archivo resultante más grande que el 
 
 
 calculate_compress_rate:
-	div $a0, $a1
-	mflo $t0
-	sb $t0, compress_rate
-	blt $t0, 1, compress_fail
-	la $a0,  success
+	mtc1 $a0, $f0
+	mtc1 $a1, $f2
+	div.s $f12, $f0, $f2
+	
+	blt $a0, $a1, compress_fail
+	
 	li $v0, 4
+	la $a0,  success
 	syscall
 	j print_rate
 	compress_fail:
@@ -31,8 +33,7 @@ calculate_compress_rate:
 		syscall
 		j end_calculate_compress_rate
 	print_rate:
-		move $a0, $t0
-		li $v0, 1
+		li $v0, 2
 		syscall
 		la $a0,  form_rate
 		li $v0, 4
