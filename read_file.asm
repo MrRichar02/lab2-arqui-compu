@@ -5,7 +5,6 @@ message_too_big: .asciiz "El archivo supera el máximo permitido 4Kib"
 message_empty: .asciiz "El archivo está vacío"
 
 .text
-
 ################
 # Función: Read_file
 # Utilidad: Intenta abrir y leer el archivo especificado por el usuario

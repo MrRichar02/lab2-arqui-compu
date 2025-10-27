@@ -87,10 +87,3 @@ End_main:
 .include "write_file.asm"
 .include "checksum.asm"
 .include "compress_rate.asm"
-
-
-
-
-
-	
-	
