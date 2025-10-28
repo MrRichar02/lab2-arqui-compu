@@ -14,11 +14,11 @@
 # Salidas:
 # $v0 - número de caracteres resultado de la compresión
 
-func_compress:
+compress:
 	move $t3, $a0
 	li $t0, 0
 	while_compress:
-		beq $a2, $zero, end_func_compress		# Comprobar si ya se recorrieron todos los caracteres
+		beq $a2, $zero, end_compress		# Comprobar si ya se recorrieron todos los caracteres
 
 		addi $t0, $t0, 1
 
@@ -42,6 +42,6 @@ func_compress:
 			addi $a0, $a0, 2
 			li $t0, 0
 		j while_compress
-end_func_compress:
+end_compress:
 	sub $v0, $a0, $t3
 	jr $ra

@@ -18,10 +18,10 @@ mensaje:	.asciiz "El resultado del checksum fue: "
 # Salidas v1
 # $v0 - checksum calculado
 
-func_checksum_v1:
+checksum_v1:
 	li  $t5, 0  #Inicializar el contador en 0
 	while_checksum_v1:
-		ble $a1,$zero, end_func_checksum_v1 # Verificar si ya se recorrieron todas las palabras
+		ble $a1,$zero, end_checksum_v1 # Verificar si ya se recorrieron todas las palabras
 		lw $t0, 0($a0)
 
 		# Guardar cada caracter de la palabra actual entre los registros t1 -t4
@@ -43,7 +43,7 @@ func_checksum_v1:
 		addi $a0, $a0, 4
 		addi $a1, $a1, -4
 		j while_checksum_v1
-end_func_checksum_v1:
+end_checksum_v1:
 
 	li $v0, 4
 	la $a0, mensaje
@@ -65,10 +65,10 @@ end_func_checksum_v1:
 # Salidas v2
 # $v0 - checksum calculado
 
-func_checksum_v2:
+checksum_v2:
 	li $t1, 0
 	while_checksum_v2:
-		beq $a1,$zero, end_func_checksum_v2 # Verificar si ya se recorrieron todos los caracteres
+		beq $a1,$zero, end_checksum_v2 # Verificar si ya se recorrieron todos los caracteres
 	
 		# Sumar el valor de cada caracter
 		# al registro t1
@@ -77,7 +77,7 @@ func_checksum_v2:
 		addi $a0, $a0, 1
 		addi $a1, $a1, -1
 		j while_checksum_v2
-end_func_checksum_v2:
+end_checksum_v2:
 	li $v0, 4
 	la $a0, mensaje
 	syscall

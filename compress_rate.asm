@@ -14,7 +14,7 @@ fail: .asciiz "\nCompresión no efectiva, archivo resultante más grande que el 
 # $t0 - ratio de compresión
 
 
-calculate_compress_rate:
+compress_rate:
 	# Se envian las entradas a los registros
 	# de punto flotante en la pestaña de Coproc 1
 	mtc1 $a0, $f0
@@ -33,7 +33,7 @@ calculate_compress_rate:
 		la $a0, fail
 		li $v0, 4
 		syscall
-		j end_calculate_compress_rate
+		j end_compress_rate
 
 	print_rate:
 		# Imprimir el resutado de la división
@@ -43,5 +43,5 @@ calculate_compress_rate:
 		li $v0, 4
 		syscall
 
-end_calculate_compress_rate:
+end_compress_rate:
 	jr $ra

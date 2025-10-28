@@ -9,7 +9,7 @@
 # t0: copia de la direccion del archivo comprimido
 # t1: copia  del file descriptor obtenida al abrir el archivo
 
-func_write_file:
+write_file:
 	# Abrir archivo con el flag de escritura
 	move $t0, $a1
 	li $v0, 13
