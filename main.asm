@@ -46,7 +46,7 @@ Main:
 	la $a0, data_compress    # Entrada 1
 	la $a1, data_to_compress # Entrada 2
 	move $a2, $s0		 # Entrada 3
-	jal func_compress	 # Llamado a la función
+	jal compress	 # Llamado a la función
 	
 	move $s1, $v0            # Guardar el valor de caracteres resultante de la compresión
 	
@@ -54,17 +54,17 @@ Main:
 	la $a0, output_file_name	# Entrada 1 
 	la $a1, data_compress		# Entrada 2
 	move $a2, $s1			# Entrada 3
-	jal func_write_file		# Llamado a la funcion
+	jal write_file		# Llamado a la funcion
 	
 	# Checksum 
 	la $a0, data_compress	# Entrada 1
 	move $a1, $s1		# Entrada 2
-	jal func_checksum_v1	# Llamado a la funcion
+	jal checksum_v2	# Llamado a la funcion
 	
 	# Radio de comprension func calculate_compress_rate()
 	move $a0, $s0			# Entrada 1
 	move $a1, $s1			# Entrada 2
-	jal  calculate_compress_rate	# Llamado a la funcion
+	jal  compress_rate	# Llamado a la funcion
 	
 	j End_main
 	

@@ -14,7 +14,6 @@ invalidad_char_error: 	.asciiz "Se encontro un caracter invalido"
 # Version 1
 # Variables:
 # t0: byte actual a verificar
-# t1: alacena el resultado para comprobar si la direccion del byte actual es multiplo de 4 o no
 check_chars_v1:
 	ble $a1, $zero, good_end_chars_v1		# Verificar si ya se recorrieron todos los caracteres
 	lbu $t0, 0($a0)
