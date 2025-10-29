@@ -47,7 +47,6 @@ end_check_chars_v1:
 # t0: En este se va guardando el valor de cada palabra 
 # t1: Contador utlizado para recorrer los 4 caracteres de la palabra actual
 # t2: En este se van almacenando los caracteres de cada palabra 
-# t3: Contador de valores nulos, se usa para permitir casos donde no se llena completamente el ultimo bloque 
 check_chars_v2:
 	ble $a1, $zero, good_end_chars_v2 		# Verficar si ya se recorrieron todas las palabras
 	lw $t0, 0($a0)

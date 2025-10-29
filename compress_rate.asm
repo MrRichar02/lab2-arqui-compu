@@ -7,11 +7,14 @@ fail: .asciiz "\nCompresión no efectiva, archivo resultante más grande que el 
 .text
 ####### func calculate_compress_rate (size original text, size compressed content ) ######
 # Entradas:
-# $a0 - size original text
-# $a1 - size compressed content
+# $a0 - tamaño del archivo original 
+# $a1 - tamaño del archivo comprimido
 
 # Variables locales:
 # $t0 - ratio de compresión
+# $f0 copia en punto flotante de $a0
+# $f2 copia en punto flotante de $a1
+# $f12 resutado de la división $f0/$f2
 
 
 compress_rate:
